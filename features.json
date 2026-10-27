@@ -1,0 +1,13 @@
+{
+  "product_name": "Loja Demo",
+  "features": {
+    "auth":           { "enabled": true,  "variant": ["email", "social"] },
+    "catalog":        { "enabled": true,  "variant": "search" },
+    "cart":           { "enabled": true },
+    "order":          { "enabled": true },
+    "payment":        { "enabled": true,  "variant": ["pix", "card", "boleto"] },
+    "recommendation": { "enabled": true,  "variant": "history" },
+    "shipping":       { "enabled": true,  "variant": "cep" },
+    "notification":   { "enabled": false, "variant": ["email"] }
+  }
+}

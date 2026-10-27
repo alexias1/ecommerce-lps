@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loja LPS</title>
+<style>
+:root{--bg:#eef1f4;--panel:#fff;--ink:#14213d;--mute:#5b6577;--line:#d3d9e1;--accent:#0f8b8d;--signal:#f2a900;--bad:#c8553d;--r:6px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Bahnschrift","Segoe UI",system-ui,sans-serif}
+button,input,select{font:inherit;color:inherit}
+button{background:var(--ink);color:#fff;border:0;border-radius:var(--r);padding:.45rem .9rem;cursor:pointer}
+button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+button:disabled{opacity:.45;cursor:not-allowed}
+input,select{border:1px solid var(--line);border-radius:var(--r);padding:.4rem .6rem;background:#fff;min-width:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+header{background:var(--ink);color:#fff;padding:1rem 1.5rem}
+header h1{margin:0 0 .6rem;font-size:1.25rem;font-weight:600}
+header p{margin:0 0 .8rem;color:#aab4c8;font-size:.85rem;max-width:70ch}
+#rail{display:flex;flex-wrap:wrap;gap:.4rem;margin:0;padding:0;list-style:none}
+#rail li{display:flex;align-items:center;gap:.4rem;padding:.25rem .6rem;border:1px solid #3a4a6b;border-radius:99px;font-size:.8rem;transition:background .2s,border-color .2s,color .2s}
+#rail li i{width:8px;height:8px;border-radius:50%;background:#6c7a96}
+#rail li.up i{background:#3ecf8e}
+#rail li.off{opacity:.4;border-style:dashed}
+#rail li small{color:#aab4c8}
+#rail li.on{background:var(--signal);border-color:var(--signal);color:#14213d}
+#rail li.on small{color:#14213d}
+main{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:1.5rem;padding:1.5rem;max-width:1200px;margin:auto}
+nav{display:flex;gap:.25rem;border-bottom:1px solid var(--line);margin-bottom:1rem}
+nav button{background:none;color:var(--mute);border-radius:0;padding:.5rem 1rem;border-bottom:3px solid transparent}
+nav button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
+section{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:1rem 1.2rem;margin-bottom:1rem}
+h2{margin:0 0 .7rem;font-size:1rem}
+.row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.prod{display:grid;grid-template-columns:1fr auto auto;gap:.8rem;align-items:center;padding:.55rem 0;border-top:1px solid var(--line)}
+.prod:first-of-type{border-top:0}
+.prod small{color:var(--mute);display:block}
+.price{font-variant-numeric:tabular-nums;font-weight:600}
+.mute{color:var(--mute);font-size:.85rem}
+#msg{min-height:1.4em;font-size:.9rem}
+#msg.err{color:var(--bad)}
+#log{list-style:none;margin:0;padding:0;max-height:320px;overflow:auto;font-size:.82rem}
+#log li{padding:.45rem 0;border-top:1px solid var(--line)}
+#log li:first-child{border-top:0}
+#log span{display:block;color:var(--accent)}
+.feat{display:grid;grid-template-columns:240px 1fr;gap:.5rem;padding:.55rem 0;border-top:1px solid var(--line);align-items:center}
+.feat label{margin-right:.8rem;white-space:nowrap}
+.feat .vars{padding-left:1.2rem;border-left:2px solid var(--line)}
+pre{background:var(--ink);color:#dce3f0;padding:.8rem;border-radius:var(--r);overflow:auto;font-size:.8rem}
+@media (max-width:860px){main{grid-template-columns:1fr;padding:1rem}.feat{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="title">Loja LPS</h1>
+  <p>Cada recurso da loja é um microsserviço. Quando você age, os serviços acionados acendem abaixo.</p>
+  <ul id="rail" aria-label="Microsserviços do produto"></ul>
+</header>
+<main>
+  <div>
+    <nav role="tablist">
+      <button role="tab" aria-selected="true" data-tab="shop">Loja</button>
+      <button role="tab" aria-selected="false" data-tab="cfg">Montar produto</button>
+    </nav>
+
+    <div id="shop">
+      <section id="authBox">
+        <h2 id="who">Entrar</h2>
+        <div class="row" id="authForm">
+          <input id="email" type="email" placeholder="email" aria-label="Email">
+          <input id="pw" type="password" placeholder="senha" aria-label="Senha">
+          <button id="bLogin">Entrar</button>
+          <button id="bReg" class="ghost">Criar conta</button>
+          <button id="bSocial" class="ghost" hidden>Entrar com Google (simulado)</button>
+        </div>
+        <div id="msg" role="status"></div>
+      </section>
+
+      <section>
+        <h2>Produtos</h2>
+        <div class="row" id="filters" hidden>
+          <input id="q" placeholder="Buscar produto" aria-label="Buscar produto">
+          <select id="cat" aria-label="Categoria"><option value="">Todas as categorias</option><option>eletronicos</option><option>livros</option><option>moda</option><option>casa</option></select>
+          <button id="bSearch" class="ghost">Buscar</button>
+        </div>
+        <div id="products"></div>
+      </section>
+
+      <section id="recBox" hidden>
+        <h2 id="recTitle">Recomendados para você</h2>
+        <div id="recs"></div>
+      </section>
+
+      <section>
+        <h2>Meus pedidos</h2>
+        <div id="orders" class="mute">Entre para ver seus pedidos.</div>
+      </section>
+    </div>
+
+    <div id="cfg" hidden>
+      <section>
+        <h2>Seletor de features</h2>
+        <p class="mute">Escolha as features e variantes do próximo produto. As obrigatórias não podem ser removidas. O estado atual vem dos serviços em execução.</p>
+        <div id="feats"></div>
+        <div class="row" style="margin-top:.8rem">
+          <button id="bGen">Gerar features.json</button>
+        </div>
+      </section>
+      <section id="genOut" hidden>
+        <h2>Novo produto</h2>
+        <p class="mute">O arquivo foi baixado. Substitua o <code>features.json</code> do projeto, pare o servidor (Ctrl+C) e rode:</p>
+        <pre>python run_local.py</pre>
+        <p class="mute">Com Docker: <code>python generate_product.py</code> e depois <code>docker compose -f generated/docker-compose.yml up --build</code>.</p>
+        <pre id="jsonOut"></pre>
+      </section>
+    </div>
+  </div>
+
+  <aside>
+    <section>
+      <h2>Carrinho</h2>
+      <div id="cart" class="mute">Seu carrinho está vazio.</div>
+      <div class="row" id="checkout" style="margin-top:.7rem" hidden>
+        <select id="method" aria-label="Forma de pagamento"></select>
+        <input id="cep" placeholder="CEP" size="9" aria-label="CEP" hidden>
+        <button id="bBuy">Finalizar pedido</button>
+      </div>
+    </section>
+    <section>
+      <h2>Serviços acionados</h2>
+      <ul id="log"><li class="mute">Nenhuma ação ainda.</li></ul>
+    </section>
+  </aside>
+</main>
+
+<script>
+const $ = s => document.querySelector(s);
+const brl = n => n.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+let H = {services:{}}, user = null;
+const on = s => s === 'gateway' || (H.services[s] && H.services[s].status === 'up');
+const info = s => (H.services[s] && H.services[s].info) || {};
+
+async function api(path, opt = {}) {
+  const r = await fetch(path, {...opt, headers:{'content-type':'application/json', ...(opt.headers || {})}});
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(typeof d.detail === 'string' ? d.detail : 'Erro ' + r.status);
+  return d;
+}
+const post = (p, body, h) => api(p, {method:'POST', body:JSON.stringify(body), headers:h});
+
+function say(t, bad) { const m = $('#msg'); m.textContent = t; m.className = bad ? 'err' : ''; }
+
+// Registra a ação e acende os microsserviços envolvidos (somente os ativos neste produto)
+function act(label, svcs) {
+  const used = ['gateway', ...svcs].filter(on);
+  const log = $('#log');
+  if (log.firstChild && log.firstChild.classList.contains('mute')) log.innerHTML = '';
+  const li = document.createElement('li');
+  li.innerHTML = `<b></b><span>${used.join(' → ')}</span>`;
+  li.firstChild.textContent = label;
+  log.prepend(li);
+  used.forEach(s => {
+    const chip = document.querySelector(`#rail [data-s="${s}"]`);
+    if (!chip) return;
+    chip.classList.add('on');
+    setTimeout(() => chip.classList.remove('on'), 1600);
+  });
+}
+
+async function loadHealth() {
+  H = await api('/health');
+  const all = ['gateway', 'auth', 'catalog', 'cart', 'order', 'payment', 'recommendation', 'shipping', 'notification'];
+  $('#rail').innerHTML = all.map(s => {
+    const svc = H.services[s];
+    const port = s === 'gateway' ? H.gateway_port : (svc ? svc.port : '');
+    const cls = s === 'gateway' || (svc && svc.status === 'up') ? 'up' : 'off';
+    return `<li class="${cls}" data-s="${s}"><i></i>${s}<small>:${port || '—'}</small></li>`;
+  }).join('');
+  const v = info('auth').variants || [];
+  $('#bSocial').hidden = !v.includes('social');
+  $('#pw').hidden = $('#bLogin').hidden = $('#bReg').hidden = !v.includes('email');
+  $('#filters').hidden = info('catalog').variant !== 'search';
+  $('#recBox').hidden = !on('recommendation');
+  $('#cep').hidden = !on('shipping');
+  $('#method').innerHTML = (info('payment').methods || []).map(m => `<option value="${m}">${{pix:'Pix', card:'Cartão', boleto:'Boleto'}[m] || m}</option>`).join('');
+}
+
+function setUser(id, email) {
+  user = id ? {id, email} : null;
+  $('#who').textContent = user ? 'Olá, ' + email : 'Entrar';
+  $('#authForm').hidden = !!user;
+  if (user) { say(''); refreshCart(); loadOrders(); loadRecs(); }
+}
+
+async function auth(kind) {
+  try {
+    const email = $('#email').value.trim(), password = $('#pw').value;
+    if (kind === 'reg') {
+      await post('/auth/register', {email, password});
+      act('Conta criada', ['auth']);
+    }
+    const d = kind === 'social'
+      ? await post('/auth/login/social', {provider:'google', email})
+      : await post('/auth/login', {email, password});
+    act(kind === 'social' ? 'Login social' : 'Login', ['auth']);
+    setUser(d.user_id, email);
+  } catch (e) { say(e.message, true); }
+}
+
+async function loadProducts() {
+  const p = new URLSearchParams();
+  if (!$('#filters').hidden) { if ($('#q').value) p.set('q', $('#q').value); if ($('#cat').value) p.set('category', $('#cat').value); }
+  const items = await api('/catalog/products?' + p);
+  act('Listar produtos', ['catalog']);
+  $('#products').innerHTML = items.length ? items.map(i => `
+    <div class="prod"><div>${i.name}<small>${i.category}</small></div>
+      <span class="price">${brl(i.price)}</span>
+      <span class="row"><button class="ghost" data-view="${i.id}">Ver detalhes</button><button data-add="${i.id}">Adicionar</button></span></div>`).join('')
+    : '<p class="mute">Nenhum produto encontrado. Tente outro termo ou categoria.</p>';
+}
+
+async function viewProduct(id) {
+  const h = user ? {'x-user-id': user.id} : {};
+  const p = await api('/catalog/products/' + id, {headers: h});
+  act('Ver detalhes: ' + p.name, ['catalog', ...(user ? ['recommendation'] : [])]);
+  say(user && on('recommendation') ? 'Visualização salva no seu histórico.' : p.name + ' — ' + brl(p.price));
+  if (user) loadRecs();
+}
+
+async function addToCart(id) {
+  if (!user) return say('Entre para adicionar itens ao carrinho.', true);
+  try { const c = await post(`/cart/cart/${user.id}/items`, {product_id:id, qty:1}); act('Adicionar ao carrinho', ['cart', 'catalog']); drawCart(c); }
+  catch (e) { say(e.message, true); }
+}
+
+function drawCart(c) {
+  $('#checkout').hidden = !c.items.length;
+  $('#cart').className = c.items.length ? '' : 'mute';
+  $('#cart').innerHTML = c.items.length
+    ? c.items.map(i => `<div class="row" style="justify-content:space-between"><span>${i.qty}× ${i.name}</span><span class="price">${brl(i.price * i.qty)}</span></div>`).join('') + `<div class="row" style="justify-content:space-between;margin-top:.5rem"><b>Subtotal</b><b class="price">${brl(c.total)}</b></div>`
+    : 'Seu carrinho está vazio.';
+}
+async function refreshCart() { drawCart(await api(`/cart/cart/${user.id}`)); }
+
+async function checkout() {
+  const btn = $('#bBuy');
+  if (btn.disabled) return;
+  btn.disabled = true; say('Processando o pedido…');
+  try {
+    const d = await post('/orders/orders', {user_id:user.id, payment_method:$('#method').value, cep:$('#cep').value || null});
+    act('Finalizar pedido #' + d.order_id, ['order', 'cart', 'shipping', 'payment', 'recommendation', 'notification']);
+    say(`Pedido #${d.order_id}: ${brl(d.total)} (frete ${brl(d.shipping)}), pagamento ${d.payment.status === 'approved' ? 'aprovado' : 'pendente'}.`);
+    await refreshCart(); await loadOrders(); await loadRecs();
+  } catch (e) {
+    say(e.message + ' Confira em "Meus pedidos" antes de tentar de novo.', true);
+    await refreshCart(); await loadOrders();
+  } finally { btn.disabled = false; }
+}
+
+async function loadOrders() {
+  const o = await api('/orders/orders/' + user.id);
+  act('Listar pedidos', ['order']);
+  $('#orders').innerHTML = o.length ? o.map(x => `<div class="prod"><div>Pedido #${x.id}<small>${x.method} · ${x.status}</small></div><span class="price">${brl(x.total)}</span><span></span></div>`).join('') : 'Você ainda não fez pedidos.';
+}
+
+async function loadRecs() {
+  if (!on('recommendation') || !user) return;
+  const d = await api('/recommendations/recommend/' + user.id);
+  act('Recomendações', ['recommendation', 'catalog']);
+  $('#recTitle').textContent = d.strategy === 'history' ? 'Recomendados pelo seu histórico' : 'Mais populares';
+  $('#recs').innerHTML = d.items.map(i => `<div class="prod"><div>${i.name}<small>${i.category}</small></div><span class="price">${brl(i.price)}</span><button data-add="${i.id}">Adicionar</button></div>`).join('');
+}
+
+// ---- Seletor de features ----
+const FEATS = [
+  ['auth', 'Autenticação', true, 'multi', ['email', 'social']],
+  ['catalog', 'Catálogo', true, 'one', ['simple', 'search']],
+  ['cart', 'Carrinho', true],
+  ['order', 'Pedidos', true],
+  ['payment', 'Pagamento', true, 'multi', ['pix', 'card', 'boleto']],
+  ['recommendation', 'Recomendação', false, 'one', ['history', 'popularity']],
+  ['shipping', 'Frete', false, 'one', ['fixed', 'cep']],
+  ['notification', 'Notificações', false, 'multi', ['email', 'sms']],
+];
+function current(s) {
+  const i = info(s);
+  return {auth:i.variants, catalog:i.variant && [i.variant], payment:i.methods, recommendation:i.strategy && [i.strategy], shipping:i.variant && [i.variant], notification:i.channels}[s] || [];
+}
+function drawFeats() {
+  $('#feats').innerHTML = FEATS.map(([k, name, must, kind, opts]) => {
+    const cur = current(k);
+    const card = !opts ? '' : (kind === 'one' ? '[1,1] escolha uma' : `[1,${opts.length}] escolha uma ou mais`);
+    const head = `<label><input type="checkbox" data-on="${k}" ${must ? 'checked disabled' : (on(k) ? 'checked' : '')}> <b>${name}</b></label>
+      <div class="mute">${must ? 'obrigatória' : 'opcional'}${card ? ', variantes ' + card : ''}</div>`;
+    const vars = opts ? opts.map(o => `<label><input type="${kind === 'one' ? 'radio' : 'checkbox'}" name="v-${k}" value="${o}" ${(cur.length ? cur.includes(o) : o === opts[0]) ? 'checked' : ''}> ${o}</label>`).join('') : '<span class="mute">sem variantes</span>';
+    return `<div class="feat"><div>${head}</div><div class="vars">${vars}</div></div>`;
+  }).join('');
+}
+function genJson() {
+  const features = {};
+  FEATS.forEach(([k, , must, kind, opts]) => {
+    const enabled = must || document.querySelector(`[data-on="${k}"]`).checked;
+    const f = {enabled};
+    if (opts) {
+      const picked = [...document.querySelectorAll(`[name="v-${k}"]:checked`)].map(e => e.value);
+      f.variant = kind === 'one' ? picked[0] : picked;
+    }
+    features[k] = f;
+  });
+  const json = JSON.stringify({product_name:'Meu Produto', features}, null, 2);
+  $('#jsonOut').textContent = json; $('#genOut').hidden = false;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([json], {type:'application/json'}));
+  a.download = 'features.json'; a.click();
+}
+
+// ---- Eventos ----
+document.addEventListener('click', e => {
+  const t = e.target;
+  if (t.dataset.add) addToCart(+t.dataset.add);
+  if (t.dataset.view) viewProduct(+t.dataset.view);
+  if (t.dataset.tab) {
+    document.querySelectorAll('nav button').forEach(b => b.setAttribute('aria-selected', b === t));
+    $('#shop').hidden = t.dataset.tab !== 'shop'; $('#cfg').hidden = t.dataset.tab !== 'cfg';
+  }
+});
+$('#bLogin').onclick = () => auth('login');
+$('#bReg').onclick = () => auth('reg');
+$('#bSocial').onclick = () => auth('social');
+$('#bSearch').onclick = loadProducts;
+$('#bBuy').onclick = checkout;
+$('#bGen').onclick = genJson;
+
+(async () => {
+  try { await loadHealth(); await loadProducts(); drawFeats(); }
+  catch (e) { say('Não foi possível falar com o gateway. Ele está rodando?', true); }
+})();
+</script>
+</body>
+</html>
