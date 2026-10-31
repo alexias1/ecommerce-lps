@@ -57,14 +57,28 @@ python run_local.py            # lê features.json, sobe os serviços e mostra a
 ```
 Com Docker:
 ```bash
-python generate_product.py     # gera generated/docker-compose.yml
+python generate_product.py     # valida o features.json e gera generated/docker-compose.yml
 docker compose -f generated/docker-compose.yml up --build
 ```
 **Interface web (loja + seletor de features): http://localhost:8000/ui/**
 
 Documentação interativa (Swagger): http://localhost:8000/docs e `http://localhost:<porta>/docs` de cada serviço.
 
+## Validação das configurações (OR/XOR)
+`python generate_product.py meu.json --check` valida sem gerar nada; `run_local.py` e o gerador validam sempre antes de subir.
+Regras (definidas em `common/model.py`): features obrigatórias não podem ser desligadas; `cart` requer `catalog`;
+`order` requer `cart` e `payment`; pontos de variação XOR `[1,1]` (catálogo, recomendação, frete) exigem exatamente uma
+variante e OR `[1,n]` (autenticação, pagamento, notificações) exigem de uma a n, sem repetição. Todos os erros aparecem de uma vez.
+A aba "Montar produto" aplica as mesmas cardinalidades antes de baixar o arquivo.
+
+Notificações: se nenhum canal for informado, o aviso sai por **todos** os canais habilitados no produto (email, sms ou ambos).
+
 ## Testar
+Testes automatizados (validação, modelo × código × diagramas, docker-compose gerado, canais de notificação):
+```bash
+python -m unittest discover -s tests -t . -v
+```
+Teste de fumaça do produto em execução:
 Com o produto rodando, em outro terminal:
 ```bash
 python smoke_test.py          # fluxo principal pelo gateway, com o tempo de cada etapa
@@ -94,6 +108,3 @@ curl $G/health                                                    # status e por
 ## Interface web
 - **Loja:** login, catálogo, carrinho, pedido e recomendações. A faixa no topo mostra cada microsserviço com sua porta; os serviços acionados por cada ação acendem e aparecem em "Serviços acionados".
 - **Montar produto:** seletor de features/variantes que gera o `features.json` do novo produto.
-
-## Próximos passos
-Diagramas, testes e relatório.

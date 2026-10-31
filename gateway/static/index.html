@@ -38,7 +38,8 @@ h2{margin:0 0 .7rem;font-size:1rem}
 .price{font-variant-numeric:tabular-nums;font-weight:600}
 .mute{color:var(--mute);font-size:.85rem}
 #msg{min-height:1.4em;font-size:.9rem}
-#msg.err{color:var(--bad)}
+#msg.err,#cfgMsg{color:var(--bad)}
+#cfgMsg{font-size:.9rem;margin-top:.5rem}
 #log{list-style:none;margin:0;padding:0;max-height:320px;overflow:auto;font-size:.82rem}
 #log li{padding:.45rem 0;border-top:1px solid var(--line)}
 #log li:first-child{border-top:0}
@@ -106,6 +107,7 @@ pre{background:var(--ink);color:#dce3f0;padding:.8rem;border-radius:var(--r);ove
         <div class="row" style="margin-top:.8rem">
           <button id="bGen">Gerar features.json</button>
         </div>
+        <div id="cfgMsg" role="alert"></div>
       </section>
       <section id="genOut" hidden>
         <h2>Novo produto</h2>
@@ -298,16 +300,20 @@ function drawFeats() {
   }).join('');
 }
 function genJson() {
-  const features = {};
-  FEATS.forEach(([k, , must, kind, opts]) => {
+  const features = {}, errors = [];
+  FEATS.forEach(([k, name, must, kind, opts]) => {
     const enabled = must || document.querySelector(`[data-on="${k}"]`).checked;
     const f = {enabled};
     if (opts) {
       const picked = [...document.querySelectorAll(`[name="v-${k}"]:checked`)].map(e => e.value);
       f.variant = kind === 'one' ? picked[0] : picked;
+      if (enabled && !picked.length) errors.push(`${name}: escolha ${kind === 'one' ? 'exatamente 1 variante [1,1]' : `de 1 a ${opts.length} variantes [1,${opts.length}]`}.`);
     }
     features[k] = f;
   });
+  $('#cfgMsg').innerHTML = errors.map(e => '• ' + e).join('<br>');
+  $('#genOut').hidden = true;
+  if (errors.length) return;
   const json = JSON.stringify({product_name:'Meu Produto', features}, null, 2);
   $('#jsonOut').textContent = json; $('#genOut').hidden = false;
   const a = document.createElement('a');

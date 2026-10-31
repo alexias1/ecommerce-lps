@@ -39,11 +39,14 @@ class NotificationService:
         self.channels = build(CHANNELS, self.names)
 
     def notify(self, n):
-        if n.channel not in self.channels:
-            raise ServiceError(400, f"Canal '{n.channel}' não habilitado: {self.names}")
-        self.channels[n.channel].send(n.user_id, n.message)
-        self.repo.add(n)
-        return {"sent": True}
+        """Sem canal informado, usa todos os canais habilitados; com canal, ele precisa estar habilitado."""
+        if n.channel is not None and n.channel not in self.channels:
+            raise ServiceError(400, f"Canal '{n.channel}' não habilitado neste produto: {self.names}")
+        targets = [n.channel] if n.channel else self.names
+        for ch in targets:
+            self.channels[ch].send(n.user_id, n.message)
+            self.repo.add(n.user_id, ch, n.message)
+        return {"sent": True, "channels": targets}
 
     def log(self):
         return self.repo.all()

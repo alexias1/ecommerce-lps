@@ -1,0 +1,151 @@
+digraph comps {
+rankdir=LR; ranksep=0.45; nodesep=0.2; newrank=true; compound=true;
+graph [fontname="DejaVu Sans", fontsize=13, pad=0.3, bgcolor=white];
+node [fontname="DejaVu Sans", fontsize=11];
+edge [fontname="DejaVu Sans", fontsize=9];
+gw [shape=component, style=filled, fillcolor="#e9e4f3", label="«component»\nAPI Gateway\n:8000"];
+subgraph cluster_auth { label="auth-service  :8001"; style="filled"; fillcolor="#e6ecf7"; color="#6f86b8"; fontsize=12;
+auth_c [shape=component, style=filled, fillcolor="#dcecee", label="«component»\nAuthController\n(main.py)"];
+auth_s [shape=component, style=filled, fillcolor="#dcecee", label="«component»\nAuthService\n(service.py)"];
+auth_i [shape=box, style="filled", fillcolor="#fff7d6", label="«interface»\nAuthProvider"];
+auth_v0 [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#ffffff"><TR><TD BGCOLOR="black"><FONT COLOR="white"><B>V</B></FONT></TD><TD>«component»<BR/>EmailPasswordProvider</TD></TR></TABLE>>];
+auth_v1 [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#ffffff"><TR><TD BGCOLOR="black"><FONT COLOR="white"><B>V</B></FONT></TD><TD>«component»<BR/>SocialProvider</TD></TR></TABLE>>];
+auth_r [shape=component, style=filled, fillcolor="#e3f0e4", label="«component»\nUserRepository\n(repository.py)"];
+auth_db [label="SQLite\nauth.db", shape=cylinder, style=filled, fillcolor=white];
+vp_auth [shape=triangle, style=filled, fillcolor=white, width=1.2, height=1.0, margin=0, label=<<FONT POINT-SIZE="10"><B>Autenticação</B></FONT><BR/><FONT POINT-SIZE="9">[1,2]</FONT>> ];
+}
+gw -> auth_c [color="#8a7fb0"];
+auth_c -> auth_s;
+auth_s -> auth_i [style=dashed, arrowhead=vee, label=" usa"];
+auth_i -> auth_v0 [dir=back, arrowtail=onormal, style=dashed];
+auth_v0 -> vp_auth [dir=none, style=dashed];
+auth_i -> auth_v1 [dir=back, arrowtail=onormal, style=dashed];
+auth_v1 -> vp_auth [dir=none, style=dashed];
+auth_s -> auth_r;
+auth_r -> auth_db;
+subgraph cluster_catalog { label="catalog-service  :8002"; style="filled"; fillcolor="#e6ecf7"; color="#6f86b8"; fontsize=12;
+catalog_c [shape=component, style=filled, fillcolor="#dcecee", label="«component»\nCatalogController\n(main.py)"];
+catalog_s [shape=component, style=filled, fillcolor="#dcecee", label="«component»\nCatalogService\n(service.py)"];
+catalog_i [shape=box, style="filled", fillcolor="#fff7d6", label="«interface»\nCatalogInterface"];
+catalog_v0 [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#ffffff"><TR><TD BGCOLOR="black"><FONT COLOR="white"><B>V</B></FONT></TD><TD>«component»<BR/>SimpleCatalog</TD></TR></TABLE>>];
+catalog_v1 [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#ffffff"><TR><TD BGCOLOR="black"><FONT COLOR="white"><B>V</B></FONT></TD><TD>«component»<BR/>SearchCatalog</TD></TR></TABLE>>];
+catalog_r [shape=component, style=filled, fillcolor="#e3f0e4", label="«component»\nProductRepository\n(repository.py)"];
+catalog_db [label="SQLite\ncatalog.db", shape=cylinder, style=filled, fillcolor=white];
+vp_catalog [shape=triangle, style=filled, fillcolor=white, width=1.2, height=1.0, margin=0, label=<<FONT POINT-SIZE="10"><B>Catálogo</B></FONT><BR/><FONT POINT-SIZE="9">[1,1]</FONT>> ];
+}
+gw -> catalog_c [color="#8a7fb0"];
+catalog_c -> catalog_s;
+catalog_s -> catalog_i [style=dashed, arrowhead=vee, label=" usa"];
+catalog_i -> catalog_v0 [dir=back, arrowtail=onormal, style=dashed];
+catalog_v0 -> vp_catalog [dir=none, style=dashed];
+catalog_i -> catalog_v1 [dir=back, arrowtail=onormal, style=dashed];
+catalog_v1 -> vp_catalog [dir=none, style=dashed];
+catalog_s -> catalog_r;
+catalog_r -> catalog_db;
+subgraph cluster_payment { label="payment-service  :8005"; style="filled"; fillcolor="#e6ecf7"; color="#6f86b8"; fontsize=12;
+payment_c [shape=component, style=filled, fillcolor="#dcecee", label="«component»\nPaymentController\n(main.py)"];
+payment_s [shape=component, style=filled, fillcolor="#dcecee", label="«component»\nPaymentService\n(service.py)"];
+payment_i [shape=box, style="filled", fillcolor="#fff7d6", label="«interface»\nPaymentMethod"];
+payment_v0 [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#ffffff"><TR><TD BGCOLOR="black"><FONT COLOR="white"><B>V</B></FONT></TD><TD>«component»<BR/>PixPayment</TD></TR></TABLE>>];
+payment_v1 [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#ffffff"><TR><TD BGCOLOR="black"><FONT COLOR="white"><B>V</B></FONT></TD><TD>«component»<BR/>CardPayment</TD></TR></TABLE>>];
+payment_v2 [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#ffffff"><TR><TD BGCOLOR="black"><FONT COLOR="white"><B>V</B></FONT></TD><TD>«component»<BR/>BoletoPayment</TD></TR></TABLE>>];
+payment_r [shape=component, style=filled, fillcolor="#e3f0e4", label="«component»\nPaymentRepository\n(repository.py)"];
+payment_db [label="SQLite\npayment.db", shape=cylinder, style=filled, fillcolor=white];
+vp_payment [shape=triangle, style=filled, fillcolor=white, width=1.2, height=1.0, margin=0, label=<<FONT POINT-SIZE="10"><B>Pagamento</B></FONT><BR/><FONT POINT-SIZE="9">[1,3]</FONT>> ];
+}
+gw -> payment_c [color="#8a7fb0"];
+payment_c -> payment_s;
+payment_s -> payment_i [style=dashed, arrowhead=vee, label=" usa"];
+payment_i -> payment_v0 [dir=back, arrowtail=onormal, style=dashed];
+payment_v0 -> vp_payment [dir=none, style=dashed];
+payment_i -> payment_v1 [dir=back, arrowtail=onormal, style=dashed];
+payment_v1 -> vp_payment [dir=none, style=dashed];
+payment_i -> payment_v2 [dir=back, arrowtail=onormal, style=dashed];
+payment_v2 -> vp_payment [dir=none, style=dashed];
+payment_s -> payment_r;
+payment_r -> payment_db;
+subgraph cluster_rec { label="recommendation-service  :8006"; style="filled"; fillcolor="#e6ecf7"; color="#6f86b8"; fontsize=12;
+rec_c [shape=component, style=filled, fillcolor="#dcecee", label="«component»\nRecommendationController\n(main.py)"];
+rec_s [shape=component, style=filled, fillcolor="#dcecee", label="«component»\nRecommendationService\n(service.py)"];
+rec_i [shape=box, style="filled", fillcolor="#fff7d6", label="«interface»\nRecommendationStrategy"];
+rec_v0 [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#ffffff"><TR><TD BGCOLOR="black"><FONT COLOR="white"><B>V</B></FONT></TD><TD>«component»<BR/>HistoryStrategy</TD></TR></TABLE>>];
+rec_v1 [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#ffffff"><TR><TD BGCOLOR="black"><FONT COLOR="white"><B>V</B></FONT></TD><TD>«component»<BR/>PopularityStrategy</TD></TR></TABLE>>];
+rec_r [shape=component, style=filled, fillcolor="#e3f0e4", label="«component»\nEventRepository\n(repository.py)"];
+rec_db [label="SQLite\nrecommendation.db", shape=cylinder, style=filled, fillcolor=white];
+vp_rec [shape=triangle, style=filled, fillcolor=white, width=1.2, height=1.0, margin=0, label=<<FONT POINT-SIZE="10"><B>Recomendação</B></FONT><BR/><FONT POINT-SIZE="9">[1,1]</FONT>> ];
+}
+gw -> rec_c [color="#8a7fb0"];
+rec_c -> rec_s;
+rec_s -> rec_i [style=dashed, arrowhead=vee, label=" usa"];
+rec_i -> rec_v0 [dir=back, arrowtail=onormal, style=dashed];
+rec_v0 -> vp_rec [dir=none, style=dashed];
+rec_i -> rec_v1 [dir=back, arrowtail=onormal, style=dashed];
+rec_v1 -> vp_rec [dir=none, style=dashed];
+rec_s -> rec_r;
+rec_r -> rec_db;
+subgraph cluster_ship { label="shipping-service  :8007"; style="filled"; fillcolor="#e6ecf7"; color="#6f86b8"; fontsize=12;
+ship_c [shape=component, style=filled, fillcolor="#dcecee", label="«component»\nShippingController\n(main.py)"];
+ship_s [shape=component, style=filled, fillcolor="#dcecee", label="«component»\nShippingService\n(service.py)"];
+ship_i [shape=box, style="filled", fillcolor="#fff7d6", label="«interface»\nShippingStrategy"];
+ship_v0 [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#ffffff"><TR><TD BGCOLOR="black"><FONT COLOR="white"><B>V</B></FONT></TD><TD>«component»<BR/>FixedShipping</TD></TR></TABLE>>];
+ship_v1 [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#ffffff"><TR><TD BGCOLOR="black"><FONT COLOR="white"><B>V</B></FONT></TD><TD>«component»<BR/>CepShipping</TD></TR></TABLE>>];
+vp_ship [shape=triangle, style=filled, fillcolor=white, width=1.2, height=1.0, margin=0, label=<<FONT POINT-SIZE="10"><B>Frete</B></FONT><BR/><FONT POINT-SIZE="9">[1,1]</FONT>> ];
+}
+gw -> ship_c [color="#8a7fb0"];
+ship_c -> ship_s;
+ship_s -> ship_i [style=dashed, arrowhead=vee, label=" usa"];
+ship_i -> ship_v0 [dir=back, arrowtail=onormal, style=dashed];
+ship_v0 -> vp_ship [dir=none, style=dashed];
+ship_i -> ship_v1 [dir=back, arrowtail=onormal, style=dashed];
+ship_v1 -> vp_ship [dir=none, style=dashed];
+subgraph cluster_notif { label="notification-service  :8008"; style="filled"; fillcolor="#e6ecf7"; color="#6f86b8"; fontsize=12;
+notif_c [shape=component, style=filled, fillcolor="#dcecee", label="«component»\nNotificationController\n(main.py)"];
+notif_s [shape=component, style=filled, fillcolor="#dcecee", label="«component»\nNotificationService\n(service.py)"];
+notif_i [shape=box, style="filled", fillcolor="#fff7d6", label="«interface»\nNotificationChannel"];
+notif_v0 [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#ffffff"><TR><TD BGCOLOR="black"><FONT COLOR="white"><B>V</B></FONT></TD><TD>«component»<BR/>EmailChannel</TD></TR></TABLE>>];
+notif_v1 [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#ffffff"><TR><TD BGCOLOR="black"><FONT COLOR="white"><B>V</B></FONT></TD><TD>«component»<BR/>SmsChannel</TD></TR></TABLE>>];
+notif_r [shape=component, style=filled, fillcolor="#e3f0e4", label="«component»\nNotificationRepository\n(repository.py)"];
+notif_db [label="SQLite\nnotification.db", shape=cylinder, style=filled, fillcolor=white];
+vp_notif [shape=triangle, style=filled, fillcolor=white, width=1.2, height=1.0, margin=0, label=<<FONT POINT-SIZE="10"><B>Notificações</B></FONT><BR/><FONT POINT-SIZE="9">[1,2]</FONT>> ];
+}
+gw -> notif_c [color="#8a7fb0"];
+notif_c -> notif_s;
+notif_s -> notif_i [style=dashed, arrowhead=vee, label=" usa"];
+notif_i -> notif_v0 [dir=back, arrowtail=onormal, style=dashed];
+notif_v0 -> vp_notif [dir=none, style=dashed];
+notif_i -> notif_v1 [dir=back, arrowtail=onormal, style=dashed];
+notif_v1 -> vp_notif [dir=none, style=dashed];
+notif_s -> notif_r;
+notif_r -> notif_db;
+subgraph cluster_cart { label="cart-service  :8003"; style="filled"; fillcolor="#e6ecf7"; color="#6f86b8"; fontsize=12;
+cart_c [shape=component, style=filled, fillcolor="#dcecee", label="«component»\nCartController\n(main.py)"];
+cart_s [shape=component, style=filled, fillcolor="#dcecee", label="«component»\nCart\n(service.py)"];
+cart_i [shape=box, style="filled", fillcolor="#fff7d6", label="«interface»\nCartInterface"];
+cart_r [shape=component, style=filled, fillcolor="#e3f0e4", label="«component»\nCartRepository\n(repository.py)"];
+cart_db [label="SQLite\ncart.db", shape=cylinder, style=filled, fillcolor=white];
+}
+gw -> cart_c [color="#8a7fb0"];
+cart_c -> cart_s;
+cart_s -> cart_i [style=dashed, arrowhead=onormal, label=" implementa"];
+cart_s -> cart_r;
+cart_r -> cart_db;
+subgraph cluster_order { label="order-service  :8004"; style="filled"; fillcolor="#e6ecf7"; color="#6f86b8"; fontsize=12;
+order_c [shape=component, style=filled, fillcolor="#dcecee", label="«component»\nOrderController\n(main.py)"];
+order_s [shape=component, style=filled, fillcolor="#dcecee", label="«component»\nOrderService\n(service.py)"];
+order_i [shape=box, style="filled", fillcolor="#fff7d6", label="«interface»\nOrderInterface"];
+order_r [shape=component, style=filled, fillcolor="#e3f0e4", label="«component»\nOrderRepository\n(repository.py)"];
+order_db [label="SQLite\norder.db", shape=cylinder, style=filled, fillcolor=white];
+}
+gw -> order_c [color="#8a7fb0"];
+order_c -> order_s;
+order_s -> order_i [style=dashed, arrowhead=onormal, label=" implementa"];
+order_s -> order_r;
+order_r -> order_db;
+legend [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="2" CELLPADDING="3" BGCOLOR="#fafafa">
+<TR><TD ALIGN="LEFT"><B>Legenda</B></TD></TR>
+<TR><TD ALIGN="LEFT">seta tracejada com ponta vazada: implementa a interface</TD></TR>
+<TR><TD ALIGN="LEFT"><B>V</B>: variante (componente alternativo)</TD></TR>
+<TR><TD ALIGN="LEFT">△ VP: ponto de variação com cardinalidade</TD></TR>
+<TR><TD ALIGN="LEFT">cart e order: sem variação (uma só implementação)</TD></TR></TABLE>>];
+gw -> legend [style=invis];
+}

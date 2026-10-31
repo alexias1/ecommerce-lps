@@ -99,6 +99,19 @@ def t_orders():
     assert S["order_id"] in ids
 
 
+def t_notification():
+    if not on("notification"):
+        assert c.get("/notifications/log").status_code == 404
+        return
+    canais = set(info("notification")["channels"])
+    for _ in range(20):  # a notificação é enviada em segundo plano
+        usados = {n["channel"] for n in c.get("/notifications/log").json() if n["user_id"] == S["uid"]}
+        if usados:
+            break
+        time.sleep(0.25)
+    assert usados == canais, f"canais usados {sorted(usados)} != canais habilitados {sorted(canais)}"
+
+
 def t_recommend():
     if not on("recommendation"):
         assert c.get(f"/recommendations/recommend/{S['uid']}").status_code == 404
@@ -132,6 +145,7 @@ for name, fn in [
     ("Carrinho soma corretamente", t_cart),
     ("Checkout: frete + pagamento + carrinho esvaziado", t_checkout),
     ("Pedido aparece em 'Meus pedidos'", t_orders),
+    ("Notificação usa os canais habilitados", t_notification),
     ("Recomendação (histórico e fallback)", t_recommend),
     ("Erros: método inválido e carrinho vazio", t_bad_payment),
 ]:

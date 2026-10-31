@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Sobe o produto sem Docker (processos uvicorn locais) e mostra a tabela de portas (item 6.4)."""
 import os
+import signal
 import subprocess
 import sys
 import time
@@ -19,6 +20,11 @@ def start(label, module, port, extra):
     print(f"  {label:<26} http://127.0.0.1:{port}")
 
 
+def _stop(*_):
+    raise KeyboardInterrupt
+
+
+signal.signal(signal.SIGTERM, _stop)  # kill/terminate também encerra os serviços filhos
 print(f"Produto: {name}\nMicroserviços em execução:")
 for s in active:
     start(f"{s}-service", f"services.{s}.main:app", PORTS[s], env.get(s, {}))

@@ -1,0 +1,75 @@
+graph features {
+rankdir=TB; ranksep=0.55; nodesep=0.25; splines=line;
+graph [fontname="DejaVu Sans", fontsize=13, pad=0.3, bgcolor=white];
+node [fontname="DejaVu Sans", fontsize=11];
+edge [fontname="DejaVu Sans", fontsize=9];
+root [label="Loja E-commerce\n(Linha de Produto)", shape=box, style="filled", fillcolor="#14213d", fontcolor=white, fontsize=14];
+auth [label="Autenticação", shape=box, style="rounded,filled", fillcolor="#dcecee"];
+root -- auth [arrowhead=dot, dir=forward, arrowsize=0.9];
+g_auth [label="", shape=triangle, style=filled, fillcolor=black, width=0.32, height=0.28, fixedsize=true];
+auth -- g_auth;
+v_auth0 [label="Email e senha", shape=box, style=filled, fillcolor=white];
+g_auth -- v_auth0;
+v_auth1 [label="Login social", shape=box, style=filled, fillcolor=white];
+g_auth -- v_auth1;
+catalog [label="Catálogo de
+produtos", shape=box, style="rounded,filled", fillcolor="#dcecee"];
+root -- catalog [arrowhead=dot, dir=forward, arrowsize=0.9];
+g_catalog [label="", shape=triangle, style=filled, fillcolor=white, width=0.32, height=0.28, fixedsize=true];
+catalog -- g_catalog;
+v_catalog0 [label="Lista simples", shape=box, style=filled, fillcolor=white];
+g_catalog -- v_catalog0;
+v_catalog1 [label="Busca e filtros", shape=box, style=filled, fillcolor=white];
+g_catalog -- v_catalog1;
+cart [label="Carrinho", shape=box, style="rounded,filled", fillcolor="#dcecee"];
+root -- cart [arrowhead=dot, dir=forward, arrowsize=0.9];
+order [label="Pedidos", shape=box, style="rounded,filled", fillcolor="#dcecee"];
+root -- order [arrowhead=dot, dir=forward, arrowsize=0.9];
+payment [label="Pagamento", shape=box, style="rounded,filled", fillcolor="#dcecee"];
+root -- payment [arrowhead=dot, dir=forward, arrowsize=0.9];
+g_payment [label="", shape=triangle, style=filled, fillcolor=black, width=0.32, height=0.28, fixedsize=true];
+payment -- g_payment;
+v_payment0 [label="Pix", shape=box, style=filled, fillcolor=white];
+g_payment -- v_payment0;
+v_payment1 [label="Cartão", shape=box, style=filled, fillcolor=white];
+g_payment -- v_payment1;
+v_payment2 [label="Boleto", shape=box, style=filled, fillcolor=white];
+g_payment -- v_payment2;
+rec [label="Recomendação", shape=box, style="rounded,filled", fillcolor="#ffffff"];
+root -- rec [arrowhead=odot, dir=forward, arrowsize=0.9];
+g_rec [label="", shape=triangle, style=filled, fillcolor=white, width=0.32, height=0.28, fixedsize=true];
+rec -- g_rec;
+v_rec0 [label="Por histórico
+do usuário", shape=box, style=filled, fillcolor=white];
+g_rec -- v_rec0;
+v_rec1 [label="Por
+popularidade", shape=box, style=filled, fillcolor=white];
+g_rec -- v_rec1;
+ship [label="Frete", shape=box, style="rounded,filled", fillcolor="#ffffff"];
+root -- ship [arrowhead=odot, dir=forward, arrowsize=0.9];
+g_ship [label="", shape=triangle, style=filled, fillcolor=white, width=0.32, height=0.28, fixedsize=true];
+ship -- g_ship;
+v_ship0 [label="Frete fixo", shape=box, style=filled, fillcolor=white];
+g_ship -- v_ship0;
+v_ship1 [label="Frete por CEP", shape=box, style=filled, fillcolor=white];
+g_ship -- v_ship1;
+notif [label="Notificações", shape=box, style="rounded,filled", fillcolor="#ffffff"];
+root -- notif [arrowhead=odot, dir=forward, arrowsize=0.9];
+g_notif [label="", shape=triangle, style=filled, fillcolor=black, width=0.32, height=0.28, fixedsize=true];
+notif -- g_notif;
+v_notif0 [label="Email", shape=box, style=filled, fillcolor=white];
+g_notif -- v_notif0;
+v_notif1 [label="SMS", shape=box, style=filled, fillcolor=white];
+g_notif -- v_notif1;
+order -- cart [style=dashed, color="#c8553d", dir=forward, arrowhead=vee, constraint=false, label=" requer", fontcolor="#c8553d"];
+order -- payment [style=dashed, color="#c8553d", dir=forward, arrowhead=vee, constraint=false, label=" requer", fontcolor="#c8553d"];
+cart -- catalog [style=dashed, color="#c8553d", dir=forward, arrowhead=vee, constraint=false, label=" requer", fontcolor="#c8553d"];
+legend [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="2" CELLPADDING="3" BGCOLOR="#fafafa">
+<TR><TD ALIGN="LEFT"><B>Legenda</B></TD></TR>
+<TR><TD ALIGN="LEFT">● feature obrigatória</TD></TR>
+<TR><TD ALIGN="LEFT">○ feature opcional</TD></TR>
+<TR><TD ALIGN="LEFT">▲ (preenchido) grupo OR: uma ou mais variantes</TD></TR>
+<TR><TD ALIGN="LEFT">△ (vazio) grupo XOR: exatamente uma variante</TD></TR>
+<TR><TD ALIGN="LEFT"><FONT COLOR="#c8553d">⇢ requer (dependência entre features)</FONT></TD></TR></TABLE>>];
+{rank=sink; legend}
+}

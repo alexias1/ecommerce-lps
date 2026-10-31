@@ -1,0 +1,39 @@
+digraph ms {
+rankdir=TB; ranksep=0.9; nodesep=0.45; newrank=true;
+graph [fontname="DejaVu Sans", fontsize=13, pad=0.3, bgcolor=white];
+node [fontname="DejaVu Sans", fontsize=11];
+edge [fontname="DejaVu Sans", fontsize=9];
+client [label="Navegador\n(interface web /ui)", shape=box, style="rounded,filled", fillcolor="#f3efe0"];
+gw [label=<<B>API Gateway</B> :8000<BR/><FONT POINT-SIZE="9">roteia /auth /catalog /cart /orders /payments<BR/>/recommendations /shipping /notifications</FONT>>, shape=box, style="filled", fillcolor="#e9e4f3", penwidth=2];
+client -> gw [label=" HTTP/JSON"];
+auth [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#e6ecf7"><TR><TD><B>auth-service</B><BR/>:8001</TD></TR><TR><TD BGCOLOR="#e3f0e4"><FONT POINT-SIZE="9">SQLite · auth.db</FONT></TD></TR></TABLE>>];
+gw -> auth [color="#8a7fb0"];
+catalog [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#e6ecf7"><TR><TD><B>catalog-service</B><BR/>:8002</TD></TR><TR><TD BGCOLOR="#e3f0e4"><FONT POINT-SIZE="9">SQLite · catalog.db</FONT></TD></TR></TABLE>>];
+gw -> catalog [color="#8a7fb0"];
+cart [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#e6ecf7"><TR><TD><B>cart-service</B><BR/>:8003</TD></TR><TR><TD BGCOLOR="#e3f0e4"><FONT POINT-SIZE="9">SQLite · cart.db</FONT></TD></TR></TABLE>>];
+gw -> cart [color="#8a7fb0"];
+order [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#e6ecf7"><TR><TD><B>order-service</B><BR/>:8004</TD></TR><TR><TD BGCOLOR="#e3f0e4"><FONT POINT-SIZE="9">SQLite · order.db</FONT></TD></TR></TABLE>>];
+gw -> order [color="#8a7fb0"];
+payment [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#e6ecf7"><TR><TD><B>payment-service</B><BR/>:8005</TD></TR><TR><TD BGCOLOR="#e3f0e4"><FONT POINT-SIZE="9">SQLite · payment.db</FONT></TD></TR></TABLE>>];
+gw -> payment [color="#8a7fb0"];
+rec [shape=plain, label=<<TABLE BORDER="3" STYLE="dashed" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#fde9b8"><TR><TD><B>recommendation-service</B><BR/>:8006<BR/><FONT POINT-SIZE="9">perfil do usuário: histórico de<BR/>visualizações e compras</FONT></TD></TR><TR><TD BGCOLOR="#e3f0e4"><FONT POINT-SIZE="9">SQLite · recommendation.db</FONT></TD></TR></TABLE>>];
+gw -> rec [color="#8a7fb0", constraint=false];
+ship [shape=plain, label=<<TABLE BORDER="1" STYLE="dashed" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#e6ecf7"><TR><TD><B>shipping-service</B><BR/>:8007<BR/><FONT POINT-SIZE="9">(feature opcional)</FONT></TD></TR><TR><TD BGCOLOR="#eeeeee"><FONT POINT-SIZE="9">sem estado (sem banco)</FONT></TD></TR></TABLE>>];
+gw -> ship [color="#8a7fb0", constraint=false];
+notif [shape=plain, label=<<TABLE BORDER="1" STYLE="dashed" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="#e6ecf7"><TR><TD><B>notification-service</B><BR/>:8008<BR/><FONT POINT-SIZE="9">(feature opcional)</FONT></TD></TR><TR><TD BGCOLOR="#e3f0e4"><FONT POINT-SIZE="9">SQLite · notification.db</FONT></TD></TR></TABLE>>];
+gw -> notif [color="#8a7fb0", constraint=false];
+{rank=same; auth; catalog; cart; order; payment}
+{rank=same; rec; ship; notif}
+auth -> catalog -> cart -> order -> payment [style=invis];
+rec -> ship -> notif [style=invis];
+cart -> catalog [label=<<B>1</B>>, fontsize=12, constraint=false, color="#0f8b8d", fontcolor="#0f8b8d", style="solid", penwidth=1.4];
+order -> cart [label=<<B>2</B>>, fontsize=12, constraint=false, color="#0f8b8d", fontcolor="#0f8b8d", style="solid", penwidth=1.4];
+order -> payment [label=<<B>3</B>>, fontsize=12, constraint=false, color="#0f8b8d", fontcolor="#0f8b8d", style="solid", penwidth=1.4];
+order -> ship [label=<<B>4</B>>, fontsize=12, constraint=true, color="#0f8b8d", fontcolor="#0f8b8d", style="dashed", penwidth=1.4];
+order -> rec [label=<<B>5</B>>, fontsize=12, constraint=true, color="#c8553d", fontcolor="#c8553d", style="dashed", penwidth=1.4];
+catalog -> rec [label=<<B>6</B>>, fontsize=12, constraint=true, color="#c8553d", fontcolor="#c8553d", style="dashed", penwidth=1.4];
+rec -> catalog [label=<<B>7</B>>, fontsize=12, constraint=false, color="#c8553d", fontcolor="#c8553d", style="dashed", penwidth=1.4];
+order -> notif [label=<<B>8</B>>, fontsize=12, constraint=true, color="#8a7fb0", fontcolor="#8a7fb0", style="dotted", penwidth=1.4];
+legend [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#fafafa"><TR><TD COLSPAN="4" ALIGN="LEFT"><B>Chamadas entre microsserviços (HTTP/JSON)</B></TD></TR><TR><TD ALIGN="CENTER"><B>1</B></TD><TD ALIGN="LEFT">cart-service → catalog-service</TD><TD ALIGN="LEFT">GET /products/{id}</TD><TD>obrigatória</TD></TR><TR><TD ALIGN="CENTER"><B>2</B></TD><TD ALIGN="LEFT">order-service → cart-service</TD><TD ALIGN="LEFT">GET /cart/{user} e DELETE /cart/{user}</TD><TD>obrigatória</TD></TR><TR><TD ALIGN="CENTER"><B>3</B></TD><TD ALIGN="LEFT">order-service → payment-service</TD><TD ALIGN="LEFT">POST /payments</TD><TD>obrigatória</TD></TR><TR><TD ALIGN="CENTER"><B>4</B></TD><TD ALIGN="LEFT">order-service → shipping-service</TD><TD ALIGN="LEFT">POST /quote</TD><TD>opcional</TD></TR><TR><TD ALIGN="CENTER"><B>5</B></TD><TD ALIGN="LEFT">order-service → recommendation-service</TD><TD ALIGN="LEFT">POST /events (compra)</TD><TD>opcional</TD></TR><TR><TD ALIGN="CENTER"><B>6</B></TD><TD ALIGN="LEFT">catalog-service → recommendation-service</TD><TD ALIGN="LEFT">POST /events (visualização)</TD><TD>opcional</TD></TR><TR><TD ALIGN="CENTER"><B>7</B></TD><TD ALIGN="LEFT">recommendation-service → catalog-service</TD><TD ALIGN="LEFT">GET /products (candidatos à recomendação)</TD><TD>opcional</TD></TR><TR><TD ALIGN="CENTER"><B>8</B></TD><TD ALIGN="LEFT">order-service → notification-service</TD><TD ALIGN="LEFT">POST /notify (assíncrono; canais habilitados)</TD><TD>opcional</TD></TR><TR><TD COLSPAN="4" ALIGN="LEFT"><FONT POINT-SIZE="9">Borda tracejada = serviço opcional. Cada microsserviço tem o seu próprio banco (database per service). Vermelho: perfil/histórico do usuário (recomendação).</FONT></TD></TR></TABLE>>];
+ship -> legend [style=invis];
+}

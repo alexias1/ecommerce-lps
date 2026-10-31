@@ -35,7 +35,7 @@ class OrderService(OrderInterface):
             call("POST", "recommendation", "/events",
                  json={"user_id": c.user_id, "product_id": it["product_id"], "category": it["category"], "type": "purchase"})
         call_bg("POST", "notification", "/notify",  # opcional, sem esperar
-             json={"user_id": c.user_id, "message": f"Pedido #{order_id} recebido ({pay['status']})", "channel": "email"})
+             json={"user_id": c.user_id, "message": f"Pedido #{order_id} recebido ({pay['status']})"})  # canais: os habilitados no produto
         call("DELETE", "cart", f"/cart/{c.user_id}")
         return {"order_id": order_id, "subtotal": subtotal, "shipping": shipping, "total": total, "payment": pay}
 

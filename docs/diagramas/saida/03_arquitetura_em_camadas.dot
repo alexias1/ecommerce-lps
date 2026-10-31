@@ -1,0 +1,74 @@
+digraph camadas {
+rankdir=TB; compound=true; ranksep=0.6; nodesep=0.3; newrank=true;
+graph [fontname="DejaVu Sans", fontsize=13, pad=0.3, bgcolor=white];
+node [fontname="DejaVu Sans", fontsize=11];
+edge [fontname="DejaVu Sans", fontsize=9];
+subgraph cluster_ui { label="Camada de Apresentação"; style="filled"; fillcolor="#f3efe0"; color="#a89f7a";
+ui1 [label="Loja\n(login, catálogo, carrinho, pedidos, recomendações)", shape=box, style="filled", fillcolor=white];
+ui2 [label="Montar produto\n(seletor de features)", shape=box, style="filled", fillcolor=white];
+}
+subgraph cluster_gw { label="Camada de Acesso"; style="filled"; fillcolor="#e9e4f3"; color="#8a7fb0";
+gw [label="API Gateway  :8000\nroteamento: /auth  /catalog  /cart  /orders  /payments  /recommendations  /shipping  /notifications\n/health  /features  /ui", shape=box, style="filled", fillcolor=white];
+}
+subgraph cluster_svc { label="Camada de Serviços: microsserviços (Controller → Service → Repository)"; style="filled"; fillcolor="#e6ecf7"; color="#6f86b8";
+auth [shape=box, style="filled", fillcolor=white, label=<<B>auth-service</B><BR/>:8001<BR/><FONT POINT-SIZE="9">Controller · Service<BR/>Repository</FONT>>];
+vp_auth [shape=triangle, style=filled, fillcolor=white, width=1.3, height=1.05, margin=0, label=<<FONT POINT-SIZE="10"><B>Autenticação</B></FONT><BR/><FONT POINT-SIZE="9">[1,2]</FONT>> ];
+vp_auth -> auth [style=dashed, arrowhead=vee];
+gw -> vp_auth [style=invis];
+catalog [shape=box, style="filled", fillcolor=white, label=<<B>catalog-service</B><BR/>:8002<BR/><FONT POINT-SIZE="9">Controller · Service<BR/>Repository</FONT>>];
+vp_catalog [shape=triangle, style=filled, fillcolor=white, width=1.3, height=1.05, margin=0, label=<<FONT POINT-SIZE="10"><B>Catálogo</B></FONT><BR/><FONT POINT-SIZE="9">[1,1]</FONT>> ];
+vp_catalog -> catalog [style=dashed, arrowhead=vee];
+gw -> vp_catalog [style=invis];
+payment [shape=box, style="filled", fillcolor=white, label=<<B>payment-service</B><BR/>:8005<BR/><FONT POINT-SIZE="9">Controller · Service<BR/>Repository</FONT>>];
+vp_payment [shape=triangle, style=filled, fillcolor=white, width=1.3, height=1.05, margin=0, label=<<FONT POINT-SIZE="10"><B>Pagamento</B></FONT><BR/><FONT POINT-SIZE="9">[1,3]</FONT>> ];
+vp_payment -> payment [style=dashed, arrowhead=vee];
+gw -> vp_payment [style=invis];
+rec [shape=box, style="filled,dashed", fillcolor=white, label=<<B>recommendation-service</B><BR/>:8006<BR/><FONT POINT-SIZE="9">Controller · Service<BR/>Repository</FONT><BR/><FONT POINT-SIZE="9">(feature opcional)</FONT>>];
+vp_rec [shape=triangle, style=filled, fillcolor=white, width=1.3, height=1.05, margin=0, label=<<FONT POINT-SIZE="10"><B>Recomendação</B></FONT><BR/><FONT POINT-SIZE="9">[1,1]</FONT>> ];
+vp_rec -> rec [style=dashed, arrowhead=vee];
+gw -> vp_rec [style=invis];
+ship [shape=box, style="filled,dashed", fillcolor=white, label=<<B>shipping-service</B><BR/>:8007<BR/><FONT POINT-SIZE="9">Controller · Service<BR/>Repository</FONT><BR/><FONT POINT-SIZE="9">(feature opcional)</FONT>>];
+vp_ship [shape=triangle, style=filled, fillcolor=white, width=1.3, height=1.05, margin=0, label=<<FONT POINT-SIZE="10"><B>Frete</B></FONT><BR/><FONT POINT-SIZE="9">[1,1]</FONT>> ];
+vp_ship -> ship [style=dashed, arrowhead=vee];
+gw -> vp_ship [style=invis];
+notif [shape=box, style="filled,dashed", fillcolor=white, label=<<B>notification-service</B><BR/>:8008<BR/><FONT POINT-SIZE="9">Controller · Service<BR/>Repository</FONT><BR/><FONT POINT-SIZE="9">(feature opcional)</FONT>>];
+vp_notif [shape=triangle, style=filled, fillcolor=white, width=1.3, height=1.05, margin=0, label=<<FONT POINT-SIZE="10"><B>Notificações</B></FONT><BR/><FONT POINT-SIZE="9">[1,2]</FONT>> ];
+vp_notif -> notif [style=dashed, arrowhead=vee];
+gw -> vp_notif [style=invis];
+cart [shape=box, style="filled", fillcolor=white, label=<<B>cart-service</B><BR/>:8003<BR/><FONT POINT-SIZE="9">Controller · Service<BR/>Repository</FONT>>];
+gw -> cart [style=invis, minlen=2];
+order [shape=box, style="filled", fillcolor=white, label=<<B>order-service</B><BR/>:8004<BR/><FONT POINT-SIZE="9">Controller · Service<BR/>Repository</FONT>>];
+gw -> order [style=invis, minlen=2];
+{rank=same; auth; catalog; payment; rec; ship; notif; cart; order}
+auth -> catalog -> payment -> rec -> ship -> notif -> cart -> order [style=invis];
+{rank=same; vp_auth; vp_catalog; vp_payment; vp_rec; vp_ship; vp_notif}
+vp_auth -> vp_catalog -> vp_payment -> vp_rec -> vp_ship -> vp_notif [style=invis];
+}
+subgraph cluster_db { label="Camada de Persistência: um banco por serviço"; style="filled"; fillcolor="#e3f0e4"; color="#6aa06e";
+db_auth [label="SQLite\nauth.db", shape=cylinder, style=filled, fillcolor=white];
+auth -> db_auth [style=solid, arrowhead=normal];
+db_catalog [label="SQLite\ncatalog.db", shape=cylinder, style=filled, fillcolor=white];
+catalog -> db_catalog [style=solid, arrowhead=normal];
+db_payment [label="SQLite\npayment.db", shape=cylinder, style=filled, fillcolor=white];
+payment -> db_payment [style=solid, arrowhead=normal];
+db_rec [label="SQLite\nrecommendation.db", shape=cylinder, style=filled, fillcolor=white];
+rec -> db_rec [style=solid, arrowhead=normal];
+db_ship [label="sem estado\n(sem banco)", shape=note, style=filled, fillcolor="#f4f4f4"];
+ship -> db_ship [style=dotted, arrowhead=none];
+db_notif [label="SQLite\nnotification.db", shape=cylinder, style=filled, fillcolor=white];
+notif -> db_notif [style=solid, arrowhead=normal];
+db_cart [label="SQLite\ncart.db", shape=cylinder, style=filled, fillcolor=white];
+cart -> db_cart [style=solid, arrowhead=normal];
+db_order [label="SQLite\norder.db", shape=cylinder, style=filled, fillcolor=white];
+order -> db_order [style=solid, arrowhead=normal];
+{rank=same; db_auth; db_catalog; db_payment; db_rec; db_ship; db_notif; db_cart; db_order}
+db_auth -> db_catalog -> db_payment -> db_rec -> db_ship -> db_notif -> db_cart -> db_order [style=invis];
+}
+ui1 -> gw [label=" HTTP/JSON"]; ui2 -> gw [label=" HTTP/JSON"];
+gw -> rec [lhead=cluster_svc, penwidth=1.6];
+legend [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="2" CELLPADDING="3" BGCOLOR="#fafafa">
+<TR><TD ALIGN="LEFT"><B>Legenda</B></TD></TR>
+<TR><TD ALIGN="LEFT">△ ponto de variação (VP) com cardinalidade → serviço afetado</TD></TR>
+<TR><TD ALIGN="LEFT">borda tracejada: serviço opcional (pode ficar fora do produto)</TD></TR></TABLE>>];
+db_order -> legend [style=invis];
+}

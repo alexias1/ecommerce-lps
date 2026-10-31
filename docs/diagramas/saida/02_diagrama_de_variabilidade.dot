@@ -1,0 +1,50 @@
+graph variab {
+rankdir=TB; ranksep=0.5; nodesep=0.35; newrank=true;
+graph [fontname="DejaVu Sans", fontsize=13, pad=0.3, bgcolor=white];
+node [fontname="DejaVu Sans", fontsize=11];
+edge [fontname="DejaVu Sans", fontsize=9];
+vp_auth [shape=triangle, style=filled, fillcolor=white, width=1.5, height=1.3, margin=0, label=<<FONT POINT-SIZE="10"><B>Autenticação</B></FONT><BR/><FONT POINT-SIZE="9">[1,2]</FONT>> ];
+v_auth0 [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#ffffff"><TR><TD BGCOLOR="black"><FONT COLOR="white"><B>V</B></FONT></TD><TD>Email e senha</TD></TR></TABLE>>];
+vp_auth -- v_auth0 [style=dashed];
+v_auth1 [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#ffffff"><TR><TD BGCOLOR="black"><FONT COLOR="white"><B>V</B></FONT></TD><TD>Login social</TD></TR></TABLE>>];
+vp_auth -- v_auth1 [style=dashed];
+vp_catalog [shape=triangle, style=filled, fillcolor=white, width=1.5, height=1.3, margin=0, label=<<FONT POINT-SIZE="10"><B>Catálogo</B></FONT><BR/><FONT POINT-SIZE="9">[1,1]</FONT>> ];
+v_catalog0 [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#ffffff"><TR><TD BGCOLOR="black"><FONT COLOR="white"><B>V</B></FONT></TD><TD>Lista simples</TD></TR></TABLE>>];
+vp_catalog -- v_catalog0 [style=dashed];
+v_catalog1 [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#ffffff"><TR><TD BGCOLOR="black"><FONT COLOR="white"><B>V</B></FONT></TD><TD>Busca e filtros</TD></TR></TABLE>>];
+vp_catalog -- v_catalog1 [style=dashed];
+vp_payment [shape=triangle, style=filled, fillcolor=white, width=1.5, height=1.3, margin=0, label=<<FONT POINT-SIZE="10"><B>Pagamento</B></FONT><BR/><FONT POINT-SIZE="9">[1,3]</FONT>> ];
+v_payment0 [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#ffffff"><TR><TD BGCOLOR="black"><FONT COLOR="white"><B>V</B></FONT></TD><TD>Pix</TD></TR></TABLE>>];
+vp_payment -- v_payment0 [style=dashed];
+v_payment1 [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#ffffff"><TR><TD BGCOLOR="black"><FONT COLOR="white"><B>V</B></FONT></TD><TD>Cartão</TD></TR></TABLE>>];
+vp_payment -- v_payment1 [style=dashed];
+v_payment2 [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#ffffff"><TR><TD BGCOLOR="black"><FONT COLOR="white"><B>V</B></FONT></TD><TD>Boleto</TD></TR></TABLE>>];
+vp_payment -- v_payment2 [style=dashed];
+vp_rec [shape=triangle, style=filled, fillcolor=white, width=1.5, height=1.3, margin=0, label=<<FONT POINT-SIZE="10"><B>Recomendação</B></FONT><BR/><FONT POINT-SIZE="9">[1,1]</FONT>> ];
+v_rec0 [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#ffffff"><TR><TD BGCOLOR="black"><FONT COLOR="white"><B>V</B></FONT></TD><TD>Por histórico</TD></TR></TABLE>>];
+vp_rec -- v_rec0 [style=dashed];
+v_rec1 [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#ffffff"><TR><TD BGCOLOR="black"><FONT COLOR="white"><B>V</B></FONT></TD><TD>Por popularidade</TD></TR></TABLE>>];
+vp_rec -- v_rec1 [style=dashed];
+vp_ship [shape=triangle, style=filled, fillcolor=white, width=1.5, height=1.3, margin=0, label=<<FONT POINT-SIZE="10"><B>Frete</B></FONT><BR/><FONT POINT-SIZE="9">[1,1]</FONT>> ];
+v_ship0 [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#ffffff"><TR><TD BGCOLOR="black"><FONT COLOR="white"><B>V</B></FONT></TD><TD>Frete fixo</TD></TR></TABLE>>];
+vp_ship -- v_ship0 [style=dashed];
+v_ship1 [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#ffffff"><TR><TD BGCOLOR="black"><FONT COLOR="white"><B>V</B></FONT></TD><TD>Frete por CEP</TD></TR></TABLE>>];
+vp_ship -- v_ship1 [style=dashed];
+vp_notif [shape=triangle, style=filled, fillcolor=white, width=1.5, height=1.3, margin=0, label=<<FONT POINT-SIZE="10"><B>Notificações</B></FONT><BR/><FONT POINT-SIZE="9">[1,2]</FONT>> ];
+v_notif0 [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#ffffff"><TR><TD BGCOLOR="black"><FONT COLOR="white"><B>V</B></FONT></TD><TD>Email</TD></TR></TABLE>>];
+vp_notif -- v_notif0 [style=dashed];
+v_notif1 [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#ffffff"><TR><TD BGCOLOR="black"><FONT COLOR="white"><B>V</B></FONT></TD><TD>SMS</TD></TR></TABLE>>];
+vp_notif -- v_notif1 [style=dashed];
+{rank=same; vp_auth; vp_catalog; vp_payment}
+{rank=same; vp_rec; vp_ship; vp_notif}
+v_auth0 -- vp_rec [style=invis];
+v_catalog0 -- vp_ship [style=invis];
+v_payment0 -- vp_notif [style=invis];
+legend [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="2" CELLPADDING="3" BGCOLOR="#fafafa">
+<TR><TD ALIGN="LEFT"><B>Legenda</B></TD></TR>
+<TR><TD ALIGN="LEFT">△ VP: ponto de variação, com a cardinalidade das variantes</TD></TR>
+<TR><TD ALIGN="LEFT">[1,1]: escolhe-se exatamente 1 variante (XOR)</TD></TR>
+<TR><TD ALIGN="LEFT">[1,n]: escolhe-se de 1 a n variantes (OR)</TD></TR>
+<TR><TD ALIGN="LEFT"><B>V</B>: variante</TD></TR></TABLE>>];
+v_notif0 -- legend [style=invis];
+}
