@@ -1,0 +1,45 @@
+{
+  "product_name": "Loja Completa",
+  "features": {
+    "recommendation": {
+      "variant": "history",
+      "enabled": true
+    },
+    "auth": {
+      "variant": [
+        "email",
+        "social"
+      ],
+      "enabled": true
+    },
+    "cart": {
+      "enabled": true
+    },
+    "payment": {
+      "variant": [
+        "pix",
+        "card",
+        "boleto"
+      ],
+      "enabled": true
+    },
+    "notification": {
+      "variant": [
+        "email",
+        "sms"
+      ],
+      "enabled": true
+    },
+    "catalog": {
+      "variant": "search",
+      "enabled": true
+    },
+    "shipping": {
+      "variant": "cep",
+      "enabled": true
+    },
+    "order": {
+      "enabled": true
+    }
+  }
+}

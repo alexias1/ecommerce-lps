@@ -1,0 +1,173 @@
+# Gerado por generate_product.py — não edite à mão
+name: loja-completa
+services:
+  gateway:
+    build:
+      context: ../..
+      dockerfile: Dockerfile.service
+    command: ["uvicorn", "gateway.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    ports: ["8000:8000"]
+    volumes: ["lps-data:/data"]
+    healthcheck: {test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"], interval: 10s, timeout: 3s, retries: 5}
+    environment:
+      ENABLED_SERVICES: "auth,catalog,cart,order,payment,recommendation,shipping,notification"
+      AUTH_URL: "http://auth-service:8001"
+      CATALOG_URL: "http://catalog-service:8002"
+      CART_URL: "http://cart-service:8003"
+      ORDER_URL: "http://order-service:8004"
+      PAYMENT_URL: "http://payment-service:8005"
+      RECOMMENDATION_URL: "http://recommendation-service:8006"
+      SHIPPING_URL: "http://shipping-service:8007"
+      NOTIFICATION_URL: "http://notification-service:8008"
+  auth-service:
+    build:
+      context: ../..
+      dockerfile: Dockerfile.service
+    command: ["uvicorn", "services.auth.main:app", "--host", "0.0.0.0", "--port", "8001"]
+    ports: ["8001:8001"]
+    volumes: ["lps-data:/data"]
+    healthcheck: {test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/health')"], interval: 10s, timeout: 3s, retries: 5}
+    environment:
+      ENABLED_SERVICES: "auth,catalog,cart,order,payment,recommendation,shipping,notification"
+      AUTH_URL: "http://auth-service:8001"
+      CATALOG_URL: "http://catalog-service:8002"
+      CART_URL: "http://cart-service:8003"
+      ORDER_URL: "http://order-service:8004"
+      PAYMENT_URL: "http://payment-service:8005"
+      RECOMMENDATION_URL: "http://recommendation-service:8006"
+      SHIPPING_URL: "http://shipping-service:8007"
+      NOTIFICATION_URL: "http://notification-service:8008"
+      AUTH_VARIANT: "email,social"
+  catalog-service:
+    build:
+      context: ../..
+      dockerfile: Dockerfile.service
+    command: ["uvicorn", "services.catalog.main:app", "--host", "0.0.0.0", "--port", "8002"]
+    ports: ["8002:8002"]
+    volumes: ["lps-data:/data"]
+    healthcheck: {test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8002/health')"], interval: 10s, timeout: 3s, retries: 5}
+    environment:
+      ENABLED_SERVICES: "auth,catalog,cart,order,payment,recommendation,shipping,notification"
+      AUTH_URL: "http://auth-service:8001"
+      CATALOG_URL: "http://catalog-service:8002"
+      CART_URL: "http://cart-service:8003"
+      ORDER_URL: "http://order-service:8004"
+      PAYMENT_URL: "http://payment-service:8005"
+      RECOMMENDATION_URL: "http://recommendation-service:8006"
+      SHIPPING_URL: "http://shipping-service:8007"
+      NOTIFICATION_URL: "http://notification-service:8008"
+      CATALOG_VARIANT: "search"
+  cart-service:
+    build:
+      context: ../..
+      dockerfile: Dockerfile.service
+    command: ["uvicorn", "services.cart.main:app", "--host", "0.0.0.0", "--port", "8003"]
+    ports: ["8003:8003"]
+    volumes: ["lps-data:/data"]
+    healthcheck: {test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8003/health')"], interval: 10s, timeout: 3s, retries: 5}
+    environment:
+      ENABLED_SERVICES: "auth,catalog,cart,order,payment,recommendation,shipping,notification"
+      AUTH_URL: "http://auth-service:8001"
+      CATALOG_URL: "http://catalog-service:8002"
+      CART_URL: "http://cart-service:8003"
+      ORDER_URL: "http://order-service:8004"
+      PAYMENT_URL: "http://payment-service:8005"
+      RECOMMENDATION_URL: "http://recommendation-service:8006"
+      SHIPPING_URL: "http://shipping-service:8007"
+      NOTIFICATION_URL: "http://notification-service:8008"
+  order-service:
+    build:
+      context: ../..
+      dockerfile: Dockerfile.service
+    command: ["uvicorn", "services.order.main:app", "--host", "0.0.0.0", "--port", "8004"]
+    ports: ["8004:8004"]
+    volumes: ["lps-data:/data"]
+    healthcheck: {test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8004/health')"], interval: 10s, timeout: 3s, retries: 5}
+    environment:
+      ENABLED_SERVICES: "auth,catalog,cart,order,payment,recommendation,shipping,notification"
+      AUTH_URL: "http://auth-service:8001"
+      CATALOG_URL: "http://catalog-service:8002"
+      CART_URL: "http://cart-service:8003"
+      ORDER_URL: "http://order-service:8004"
+      PAYMENT_URL: "http://payment-service:8005"
+      RECOMMENDATION_URL: "http://recommendation-service:8006"
+      SHIPPING_URL: "http://shipping-service:8007"
+      NOTIFICATION_URL: "http://notification-service:8008"
+  payment-service:
+    build:
+      context: ../..
+      dockerfile: Dockerfile.service
+    command: ["uvicorn", "services.payment.main:app", "--host", "0.0.0.0", "--port", "8005"]
+    ports: ["8005:8005"]
+    volumes: ["lps-data:/data"]
+    healthcheck: {test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8005/health')"], interval: 10s, timeout: 3s, retries: 5}
+    environment:
+      ENABLED_SERVICES: "auth,catalog,cart,order,payment,recommendation,shipping,notification"
+      AUTH_URL: "http://auth-service:8001"
+      CATALOG_URL: "http://catalog-service:8002"
+      CART_URL: "http://cart-service:8003"
+      ORDER_URL: "http://order-service:8004"
+      PAYMENT_URL: "http://payment-service:8005"
+      RECOMMENDATION_URL: "http://recommendation-service:8006"
+      SHIPPING_URL: "http://shipping-service:8007"
+      NOTIFICATION_URL: "http://notification-service:8008"
+      PAYMENT_METHODS: "pix,card,boleto"
+  recommendation-service:
+    build:
+      context: ../..
+      dockerfile: Dockerfile.service
+    command: ["uvicorn", "services.recommendation.main:app", "--host", "0.0.0.0", "--port", "8006"]
+    ports: ["8006:8006"]
+    volumes: ["lps-data:/data"]
+    healthcheck: {test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8006/health')"], interval: 10s, timeout: 3s, retries: 5}
+    environment:
+      ENABLED_SERVICES: "auth,catalog,cart,order,payment,recommendation,shipping,notification"
+      AUTH_URL: "http://auth-service:8001"
+      CATALOG_URL: "http://catalog-service:8002"
+      CART_URL: "http://cart-service:8003"
+      ORDER_URL: "http://order-service:8004"
+      PAYMENT_URL: "http://payment-service:8005"
+      RECOMMENDATION_URL: "http://recommendation-service:8006"
+      SHIPPING_URL: "http://shipping-service:8007"
+      NOTIFICATION_URL: "http://notification-service:8008"
+      REC_STRATEGY: "history"
+  shipping-service:
+    build:
+      context: ../..
+      dockerfile: Dockerfile.service
+    command: ["uvicorn", "services.shipping.main:app", "--host", "0.0.0.0", "--port", "8007"]
+    ports: ["8007:8007"]
+    volumes: ["lps-data:/data"]
+    healthcheck: {test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8007/health')"], interval: 10s, timeout: 3s, retries: 5}
+    environment:
+      ENABLED_SERVICES: "auth,catalog,cart,order,payment,recommendation,shipping,notification"
+      AUTH_URL: "http://auth-service:8001"
+      CATALOG_URL: "http://catalog-service:8002"
+      CART_URL: "http://cart-service:8003"
+      ORDER_URL: "http://order-service:8004"
+      PAYMENT_URL: "http://payment-service:8005"
+      RECOMMENDATION_URL: "http://recommendation-service:8006"
+      SHIPPING_URL: "http://shipping-service:8007"
+      NOTIFICATION_URL: "http://notification-service:8008"
+      SHIPPING_VARIANT: "cep"
+  notification-service:
+    build:
+      context: ../..
+      dockerfile: Dockerfile.service
+    command: ["uvicorn", "services.notification.main:app", "--host", "0.0.0.0", "--port", "8008"]
+    ports: ["8008:8008"]
+    volumes: ["lps-data:/data"]
+    healthcheck: {test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8008/health')"], interval: 10s, timeout: 3s, retries: 5}
+    environment:
+      ENABLED_SERVICES: "auth,catalog,cart,order,payment,recommendation,shipping,notification"
+      AUTH_URL: "http://auth-service:8001"
+      CATALOG_URL: "http://catalog-service:8002"
+      CART_URL: "http://cart-service:8003"
+      ORDER_URL: "http://order-service:8004"
+      PAYMENT_URL: "http://payment-service:8005"
+      RECOMMENDATION_URL: "http://recommendation-service:8006"
+      SHIPPING_URL: "http://shipping-service:8007"
+      NOTIFICATION_URL: "http://notification-service:8008"
+      NOTIFICATION_CHANNELS: "email,sms"
+volumes:
+  lps-data: {}

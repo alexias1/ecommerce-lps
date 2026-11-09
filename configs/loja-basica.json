@@ -1,0 +1,41 @@
+{
+  "product_name": "Loja Básica",
+  "features": {
+    "recommendation": {
+      "variant": "history",
+      "enabled": false
+    },
+    "auth": {
+      "variant": [
+        "email"
+      ],
+      "enabled": true
+    },
+    "cart": {
+      "enabled": true
+    },
+    "payment": {
+      "variant": [
+        "pix"
+      ],
+      "enabled": true
+    },
+    "notification": {
+      "variant": [
+        "email"
+      ],
+      "enabled": false
+    },
+    "catalog": {
+      "variant": "simple",
+      "enabled": true
+    },
+    "shipping": {
+      "variant": "fixed",
+      "enabled": false
+    },
+    "order": {
+      "enabled": true
+    }
+  }
+}
