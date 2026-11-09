@@ -1,0 +1,24 @@
+test_canal_desabilitado_e_recusado (tests.test_lps.CanaisDeNotificacao.test_canal_desabilitado_e_recusado) ... ok
+test_canal_explicito_habilitado_funciona (tests.test_lps.CanaisDeNotificacao.test_canal_explicito_habilitado_funciona) ... ok
+test_pedido_nao_fixa_canal (tests.test_lps.CanaisDeNotificacao.test_pedido_nao_fixa_canal) ... ok
+test_sem_canal_usa_somente_os_habilitados (tests.test_lps.CanaisDeNotificacao.test_sem_canal_usa_somente_os_habilitados) ... ok
+test_contexto_de_build_aponta_para_a_raiz_do_projeto (tests.test_lps.ComposeGerado.test_contexto_de_build_aponta_para_a_raiz_do_projeto) ... ok
+test_nome_do_projeto_sem_acentos (tests.test_lps.ComposeGerado.test_nome_do_projeto_sem_acentos) ... ok
+test_yaml_valido_e_so_com_servicos_ativos (tests.test_lps.ComposeGerado.test_yaml_valido_e_so_com_servicos_ativos) ... ok
+test_cardinalidades (tests.test_lps.ModeloCodigoDiagramas.test_cardinalidades) ... ok
+test_diagrama_de_variabilidade_bate_com_o_modelo (tests.test_lps.ModeloCodigoDiagramas.test_diagrama_de_variabilidade_bate_com_o_modelo) ... ok
+test_registros_de_componentes_batem_com_o_modelo (tests.test_lps.ModeloCodigoDiagramas.test_registros_de_componentes_batem_com_o_modelo) ... ok
+test_config_completa_e_minima_sao_validas (tests.test_lps.ValidacaoOrXor.test_config_completa_e_minima_sao_validas) ... ok
+test_estrutura_invalida (tests.test_lps.ValidacaoOrXor.test_estrutura_invalida) ... ok
+test_feature_desconhecida_e_variante_em_feature_sem_variacao (tests.test_lps.ValidacaoOrXor.test_feature_desconhecida_e_variante_em_feature_sem_variacao) ... ok
+test_features_json_do_repositorio_e_valido (tests.test_lps.ValidacaoOrXor.test_features_json_do_repositorio_e_valido) ... ok
+test_obrigatorias_nao_podem_ser_desligadas (tests.test_lps.ValidacaoOrXor.test_obrigatorias_nao_podem_ser_desligadas) ... ok
+test_or_exige_de_uma_a_n_e_sem_repeticao (tests.test_lps.ValidacaoOrXor.test_or_exige_de_uma_a_n_e_sem_repeticao) ... ok
+test_resolve_aborta_com_todos_os_erros (tests.test_lps.ValidacaoOrXor.test_resolve_aborta_com_todos_os_erros) ... ok
+test_variante_ignorada_quando_feature_opcional_desligada (tests.test_lps.ValidacaoOrXor.test_variante_ignorada_quando_feature_opcional_desligada) ... ok
+test_xor_exige_exatamente_uma_variante (tests.test_lps.ValidacaoOrXor.test_xor_exige_exatamente_uma_variante) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 0.472s
+
+OK

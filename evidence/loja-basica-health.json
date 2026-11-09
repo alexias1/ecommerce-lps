@@ -1,0 +1,47 @@
+{
+  "gateway_port": 8000,
+  "services": {
+    "auth": {
+      "port": 8001,
+      "status": "up",
+      "info": {
+        "service": "auth",
+        "variants": [
+          "email"
+        ]
+      }
+    },
+    "catalog": {
+      "port": 8002,
+      "status": "up",
+      "info": {
+        "service": "catalog",
+        "variant": "simple"
+      }
+    },
+    "cart": {
+      "port": 8003,
+      "status": "up",
+      "info": {
+        "service": "cart"
+      }
+    },
+    "order": {
+      "port": 8004,
+      "status": "up",
+      "info": {
+        "service": "order"
+      }
+    },
+    "payment": {
+      "port": 8005,
+      "status": "up",
+      "info": {
+        "service": "payment",
+        "methods": [
+          "pix"
+        ]
+      }
+    }
+  }
+}
