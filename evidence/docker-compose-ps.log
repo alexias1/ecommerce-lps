@@ -1,0 +1,10 @@
+NAME                                     IMAGE                                  COMMAND                  SERVICE                  CREATED          STATUS                    PORTS
+loja-completa-auth-service-1             loja-completa-auth-service             "uvicorn services.au…"   auth-service             47 seconds ago   Up 39 seconds (healthy)   0.0.0.0:8001->8001/tcp, [::]:8001->8001/tcp
+loja-completa-cart-service-1             loja-completa-cart-service             "uvicorn services.ca…"   cart-service             47 seconds ago   Up 36 seconds (healthy)   0.0.0.0:8003->8003/tcp, [::]:8003->8003/tcp
+loja-completa-catalog-service-1          loja-completa-catalog-service          "uvicorn services.ca…"   catalog-service          47 seconds ago   Up 43 seconds (healthy)   0.0.0.0:8002->8002/tcp, [::]:8002->8002/tcp
+loja-completa-gateway-1                  loja-completa-gateway                  "uvicorn gateway.mai…"   gateway                  47 seconds ago   Up 37 seconds (healthy)   0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp
+loja-completa-notification-service-1     loja-completa-notification-service     "uvicorn services.no…"   notification-service     47 seconds ago   Up 38 seconds (healthy)   0.0.0.0:8008->8008/tcp, [::]:8008->8008/tcp
+loja-completa-order-service-1            loja-completa-order-service            "uvicorn services.or…"   order-service            47 seconds ago   Up 41 seconds (healthy)   0.0.0.0:8004->8004/tcp, [::]:8004->8004/tcp
+loja-completa-payment-service-1          loja-completa-payment-service          "uvicorn services.pa…"   payment-service          47 seconds ago   Up 38 seconds (healthy)   0.0.0.0:8005->8005/tcp, [::]:8005->8005/tcp
+loja-completa-recommendation-service-1   loja-completa-recommendation-service   "uvicorn services.re…"   recommendation-service   47 seconds ago   Up 40 seconds (healthy)   0.0.0.0:8006->8006/tcp, [::]:8006->8006/tcp
+loja-completa-shipping-service-1         loja-completa-shipping-service         "uvicorn services.sh…"   shipping-service         47 seconds ago   Up 39 seconds (healthy)   0.0.0.0:8007->8007/tcp, [::]:8007->8007/tcp

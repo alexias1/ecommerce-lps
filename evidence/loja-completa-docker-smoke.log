@@ -1,0 +1,15 @@
+Testando http://127.0.0.1:8000
+
+[PASS] Todos os serviços respondem (/health)                  188 ms
+[PASS] Autenticação (cadastro, login, senha errada)           326 ms
+[PASS] Catálogo lista produtos                                 68 ms
+[PASS] Catálogo filtra por categoria (variante search)         34 ms
+[PASS] Ver detalhes / produto inexistente = 404               249 ms
+[PASS] Carrinho soma corretamente                             267 ms
+[PASS] Checkout: frete + pagamento + carrinho esvaziado       335 ms
+[PASS] Pedido aparece em 'Meus pedidos'                        38 ms
+[PASS] Notificação usa os canais habilitados                   32 ms
+[PASS] Recomendação (histórico e fallback)                    281 ms
+[PASS] Erros: método inválido e carrinho vazio                172 ms
+
+11 passaram, 0 falharam, 0 ignorados
